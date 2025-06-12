@@ -4,9 +4,10 @@ const hat = '^';
 const hole = 'O';
 const fieldCharacter = '░';
 const pathCharacter = '*';
-let currentRow = 0;
-let currentCol = 0;
-let gridSize = 2;
+let currentRow;
+let currentCol;
+let fieldLength;
+let fieldWidth;
 
 class Field {
   constructor(field) {
@@ -30,7 +31,7 @@ class Field {
   }
 
   posCheck() {
-    if(currentRow > gridSize | currentRow < 0 | currentCol > gridSize | currentCol < 0) {
+    if(currentRow > fieldWidth | currentRow < 0 | currentCol > fieldLength | currentCol < 0) {
       console.log('You went out of bounds!')
     } else if(this.field[currentRow][currentCol] === hole) {
       console.log('You fell in a hole dummy');
@@ -92,12 +93,19 @@ function chooseTile(percent) {
   if (randomNum >= percent && randomNum <= 100) {
     return '░';
   } else {
-    return '^';
+    return 'O';
   }
 }
 
+
 function createField(length, width, percent) {
-  fieldArray = [];
+  let fieldArray = [];
+  fieldLength = length;
+  fieldWidth = width;
+  currentCol = Math.floor(Math.random() * width) + 1;
+  currentRow = Math.floor(Math.random() * length) + 1;
+  let hatX = Math.floor(Math.random() * width) + 1;
+  let hatY = Math.floor(Math.random() * width) + 1;
 
   for (let i = length; 0 < i; i--) {
     innerArray = [];
@@ -107,25 +115,18 @@ function createField(length, width, percent) {
     fieldArray.push(innerArray);
   }
 
-  fieldArray.forEach(row => {
-    console.log(row.join());
-  })
+  //Places the '*' or start point after creating the field
+  fieldArray[currentRow][currentCol] = '*';
+  fieldArray[hatX][hatY] = '^';
+
+  return fieldArray;
 }
 
-createField(8, 10, 50);
-
-//Ten arrays tall, 10 is max length, 5% holes.
-
- // Default field below
-/*const myField = new Field([
-  ['*', '░', 'O'],
-  ['░', 'O', '░'],
-  ['░', '^', '░'],
-]); 
+const myField = new Field(createField(10, 10, 20));
 
 //Print starting field
 process.stdout.write('\x1Bc');
 myField.print();
 
 //This will start accepting any input and running the below func that is the second arg
-process.stdin.on('data', chooseDirection); */
+process.stdin.on('data', chooseDirection);
